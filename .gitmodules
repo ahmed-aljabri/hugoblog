@@ -1,0 +1,4 @@
+[submodule "personalblog/publicfiles"]
+	path = personalblog/publicfiles
+	url = https://github.com/ahmed-aljabri/ahmed-aljabri.github.io.git
+	branch = main
