@@ -1,4 +1,116 @@
 baseURL = 'http://ahmed-aljabri.github.io/'
 languageCode = 'en-us'
-title = 'My New Hugo Site'
-theme="hugo-theme-hello-friend"
+title = 'AHMED AL JABRI'
+theme="hugo-theme-hello-friend-ng"
+
+
+paginate     = 10
+[params]
+  dateform        = "Jan 2, 2006"
+  dateformShort   = "Jan 2"
+  dateformNum     = "2006-01-02"
+  dateformNumTime = "2006-01-02 15:04"
+
+
+  # Subtitle for home
+  homeSubtitle = "Muscat, Oman"
+
+  # Set disableReadOtherPosts to true in order to hide the links to other posts.
+  disableReadOtherPosts = false
+
+  # Enable sharing buttons, if you like
+  enableSharingButtons = true
+
+  #Set ThemeTogel > dictates setting based on client OS's preference + allows user to decide
+  enableThemeToggle = true
+
+  # Metadata mostly used in document's head
+  description = "portfolio site and personal blog"
+  keywords = "homepage, blog, papers"
+  images = [""]
+
+[taxonomies]
+    category = "blog"
+    tag      = "tags"
+    series   = "series"
+
+
+  # Social Icons - Links to personal accounts
+
+  #[[params.social]]
+    # name = "twitter"
+    # url = "https://twitter.com/ahmedaljabri__"
+
+  [[params.social]]
+     name = "github"
+     url = "https://github.com/ahmed-aljabri"
+
+[languages]
+  [languages.en]
+    title = "AHMED AL-JABRI"
+    subtitle = "Portfolio Site and Technical Blog"
+    keywords = "blog"
+    copyright = '<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
+    readOtherPosts = "Read other posts"
+
+    [languages.en.params.logo]
+      logoText = "/A.AL-JABRI"
+      logoHomeLink = "/"
+
+  
+
+    # or
+    #
+    #path = "/img/avatar.jpg"
+    #alt = "Your example logo alt text"
+
+  # And you can even create generic menu
+  #[[menu.main]]
+   # name = "Resume"
+    #url = "/docs/mycv.pdf"
+    #weight = 2.5
+[menu]
+
+  [[menu.main]]
+    identifier = "posts"
+    name       = "Blog"
+    url        = "posts/"
+
+  # Resume Menu - uncomment to add resume option to the navbar.
+  #[[menu.main]]
+   # name = "Resume"
+    #url = "/docs/mycv.pdf"
+    #weight = 2.5
+
+
+  #[[menu.main]]
+    #identifier = "writings" 
+    #name       = "Academic Writings"
+    #url        = "writings/"
+	
+  [[menu.main]]
+    identifier = "about"
+    name       = "About"
+    url        = "about/"
+
+  # Uncomment this if you want a portrait on your start page
+  #
+  [params.portrait]
+     path     = "/img/avatar2.jpg"
+     alt      = "Portrait"
+     maxWidth = "200px"
+
+    
+  [params.footer]
+    trademark = true
+    rss = true
+    copyright = true
+    author = true
+
+    topText = ["A personal blog"]
+    bottomText = [
+      "Powered by <a href=\"http://gohugo.io\">Hugo</a>",
+      "Made by <a href=\"https://github.com/ahmed-aljabri\">AHMED AL-JABRI</a> &#9812;"
+    ]
+
+
