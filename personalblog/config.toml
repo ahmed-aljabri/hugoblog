@@ -65,10 +65,7 @@ paginate     = 10
     #alt = "Your example logo alt text"
 
   # And you can even create generic menu
-  #[[menu.main]]
-   # name = "Resume"
-    #url = "/docs/mycv.pdf"
-    #weight = 2.5
+
 [menu]
 
   [[menu.main]]
@@ -91,14 +88,14 @@ paginate     = 10
   [[menu.main]]
     identifier = "about"
     name       = "About"
-    url        = "about/"
+    url        = "about"
 
   # Uncomment this if you want a portrait on your start page
   #
-  [params.portrait]
-     path     = "/img/avatar2.jpg"
-     alt      = "Portrait"
-     maxWidth = "200px"
+  #[params.portrait]
+  #   path     = "/img/avatar2.jpg"
+  #   alt      = "Portrait"
+  #   maxWidth = "200px"
 
     
   [params.footer]
@@ -112,5 +109,6 @@ paginate     = 10
       "Powered by <a href=\"http://gohugo.io\">Hugo</a>",
       "Made by <a href=\"https://github.com/ahmed-aljabri\">AHMED AL-JABRI</a> &#9812;"
     ]
+
 
 
