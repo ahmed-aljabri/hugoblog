@@ -37,10 +37,6 @@ paginate     = 10
 
   # Social Icons - Links to personal accounts
 
-  #[[params.social]]
-    # name = "twitter"
-    # url = "https://twitter.com/ahmedaljabri__"
-
   [[params.social]]
      name = "github"
      url = "https://github.com/ahmed-aljabri"
@@ -58,13 +54,7 @@ paginate     = 10
       logoHomeLink = "/"
 
   
-
-    # or
-    #
-    #path = "/img/avatar.jpg"
-    #alt = "Your example logo alt text"
-
-  # And you can even create generic menu
+# Generic Menu
 
 [menu]
 
@@ -90,8 +80,6 @@ paginate     = 10
     name       = "About"
     url        = "about"
 
-  # Uncomment this if you want a portrait on your start page
-  #
   [params.portrait]
      path     = "/img/avatar.jpg"
      alt      = "Portrait"
