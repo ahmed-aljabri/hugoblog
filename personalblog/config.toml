@@ -92,10 +92,10 @@ paginate     = 10
 
   # Uncomment this if you want a portrait on your start page
   #
-  #[params.portrait]
-  #   path     = "/img/avatar2.jpg"
-  #   alt      = "Portrait"
-  #   maxWidth = "200px"
+  [params.portrait]
+     path     = "/img/avatar.jpg"
+     alt      = "Portrait"
+     maxWidth = "200px"
 
     
   [params.footer]
