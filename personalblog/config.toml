@@ -13,7 +13,7 @@ paginate     = 10
 
 
   # Subtitle for home
-  homeSubtitle = "Muscat, Oman"
+  homeSubtitle = "A technical blog & portfolio site"
 
   # Set disableReadOtherPosts to true in order to hide the links to other posts.
   disableReadOtherPosts = false
@@ -41,6 +41,10 @@ paginate     = 10
      name = "github"
      url = "https://github.com/ahmed-aljabri"
 
+  [[params.social]] #Using a generic icon for substack since it is not yet supported.
+     name = "case"
+     url = "https://substack.com/@ahmedaljabri"
+
 [languages]
   [languages.en]
     title = "AHMED AL-JABRI"
@@ -66,7 +70,7 @@ paginate     = 10
   # Resume Menu - uncomment to add resume option to the navbar.
   #[[menu.main]]
    # name = "Resume"
-    #url = "/docs/mycv.pdf"
+    #url = "/path_to_cv/mycv.pdf"
     #weight = 2.5
 
 
@@ -78,7 +82,7 @@ paginate     = 10
   [[menu.main]]
     identifier = "about"
     name       = "About"
-    url        = "about"
+    url        = "about/"
 
   [params.portrait]
      path     = "/img/avatar.jpg"
