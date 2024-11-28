@@ -13,9 +13,9 @@ tags:
 
 > **Latest Revision: 27th of December**
 
-#### prerequisites
+#### Prerequisites
 
-The reader should have some understanding of basic networking concepts such as the OSI protocol layers, how the web and in particular HTTP works.
+This content of this post assumes knowlege of basic networking concepts such as the [OSI](https://en.wikipedia.org/wiki/OSI_model) layered model and how the [HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP) protocol works to fetch and serve web content.
 ___
 
 ## Introduction
@@ -38,6 +38,7 @@ In the early days of the web, there were relatively few requests occurring in a 
 H1 was the first HTTP version standardized by the Internet Engineering Task Force (IETF) in 1995. The specifications of how web exchanges operate are illustrated in the figure below.
 
 ![HTTP/1.0](/img/HTTP1_0_Sequence.drawio.png)
+*Fig 1: Timeline illustrating a H1.0 exchange, note that the TCP connection only serves a single HTTP request.*
 
 As presented above, in a typical H1.0 exchange, a TCP connection is established to facilitate the transport of a single HTTP exchange (HTTP Request & Response) and then immediately terminated. This means that for every HTTP exchange the client will need to establish a new TCP connection with the server which does not seem effective nevertheless, it was sufficient enough for fetching simple static sites in the early days of the web. However, it is obvious how limited and unscalable this approach becomes if more HTTP exchanges are to take place. Hence, the arrival of H1.1 just a year later.
 
@@ -46,30 +47,32 @@ As presented above, in a typical H1.0 exchange, a TCP connection is established 
 What H1.1 mainly aimed to achieve was the ability to consume TCP connections more efficiently, specifically by exchanging multiple HTTP exchanges per TCP connection as illustrated in the diagram below. This approach was instantly more effective than H1.0 since TCP connections are now kept “alive” until all needed HTTP exchanges are completed.
 
 ![HTTP/1.1](/img/HTTP1_1_Sequence.drawio.png)
+*Fig 2: H2 allows for multiple requests to be sent in the same TCP connection.*
 
-
-More so, this version of HTTP introduced the concept of Pipelining which allows the client to send subsequent HTTP requests without needing to wait for each corresponding response to be processed. This also led to notable performance improvements since in previous versions, subsequent requests could not be sent until the response of the previous request has been received and processed.
+More so, this version of HTTP introduced the concept of *Pipelining* which allows the client to send subsequent HTTP requests without needing to wait for each corresponding response to be processed. This also led to notable performance improvements since in previous versions, subsequent requests could not be sent until the response of the previous request has been received and processed.
 
 Nevertheless, H1.1 still left room for improvement. Mainly in the fact that from the server’s perspective, responses are not sent until all prior requests are processed. For example in the figure above, even though request #1 arrives first, it is not responded to until request #3 has been processed. This is not ideal in the web domain as some requests can be unrelated to others and for that reason, they should not be slowed down by later requests.
 
 To get around this issue, specifications suggested that clients can establish up to 6 TCP connections with a server as shown in figure 3. This way, subsequent requests can be assigned a dedicated TCP connection, which will make HTTP requests sent in different TCP connections independent of the rest allowing the server to respond to them faster.
 
 ![HTTP/1.1 6 TCP Connections](/img/6TCPStreams.drawio.png)
+*Fig 3: H1.1 client can establish six TCP connections to enable the receiver to respond independently to the transmitted data in each connection.*
 
 This however was not an efficient solution mainly because of the high resources that servers require to maintain up to 6 TCP connections per client. Despite the inefficiency in this regard, H1.1 worked well and was not succeeded until about a decade later. The arrival of H2 enhanced the performance and efficiency of web exchanges but also shed light to major TCP limitations that eventually led to the development of QUIC.
 
 #### HTTP/2
 
-Working around the previous version’s limitations, H2 implemented the concept of Multiplexing that introduced independent streams for HTTP exchanges that can share a single TCP connection. This way HTTP exchanges can be processed independently without the need to establish multiple TCP connections as done in H1.1.
+Working around the previous version’s limitations, H2 implemented the concept of *Multiplexing* that introduced independent streams for HTTP exchanges that can share a single TCP connection. This way HTTP exchanges can be processed independently without the need to establish multiple TCP connections as done in H1.1.
 
 ![HTTP/2](/img/HTTP2_Sequence.drawio.png)
-
+*Fig 4: H2 requests can be uniquely identified allowing the server to respond to them independently.*
 
 Nevertheless, the performance benefits of H2 could not be fully realised due to TCP’s byte-stream view of data that it receives from other layers. This means that data in independent H2 streams at the application layer will be interpreted as a whole stream of bytes by TCP at the transport layer as shown in the following diagram.
 
 ![TCP's stream perspective](/img/HTTP2HOF.drawio.png)
+*Fig 5: The H2 streams are treated as a single stream of bytes at the transport layer.*
 
-The important aspect to grasp from the illustration above is how the three independent HTTP streams (A, B & C) are batched together and sent in-flight as a single stream of bytes at the transport layer, where in the case that a byte in that stream is lost, the entire stream awaits re-transmission before being processed at the receiver. This behavior is referred to as Head-of-Line Blocking. Ultimately, this observation highlights an important performance bottleneck:
+The important aspect to grasp from the illustration above is how the three independent HTTP streams (A, B & C) are batched together and sent in-flight as a single stream of bytes at the transport layer, where in the case that a byte in that stream is lost, the entire stream awaits re-transmission before being processed at the receiver. This behavior is referred to as *Head-of-Line Blocking*. Ultimately, this observation highlights an important performance bottleneck:
 
 > To fully reap the benefits of multiplexing at the application layer (which is what H2 did by introducing streams), multiplexing must also be supported at the transport layer.
 
@@ -79,7 +82,7 @@ At this stage, we can begin to see that for the web to continue to enhance its p
 
   2. Develop a new protocol that will understand the concept of streams therefore supporting multiplexing and have it use UDP as a substrate (for reasons explained in the following).
 
-It might first seem that enhancing an established protocol is a more efficient and reasonable solution rather than developing one from scratch. However in this case it is the opposite. TCP is a kernel-side protocol that has been used in the internet for over 40 years, to introduce a major change to such an established protocol would practically mean changing TCP’s implementation in major kernel vendors. This would also include deploying changes to Middleboxes across the internet and not just end-systems which is simply not practical in today’s networks. More so, even if global scale support was initiated, it will take years to see wide-scale deployment which doesn’t match the rate at which the web is evolving. This challenge that stagnates the enhancements of a protocol is sometimes referred to as “Protocol Ossification” which is a topic worthy of its own post.
+It might first seem that enhancing an established protocol is a more efficient and reasonable solution rather than developing one from scratch. However in this case it is the opposite. TCP is a kernel-side protocol that has been used in the internet for over 40 years, to introduce a major change to such an established protocol would practically mean changing TCP’s implementation in major kernel vendors. This would also include deploying changes to *Middleboxes* across the internet and not just end-systems which is simply not practical in today’s networks. More so, even if global scale support was initiated, it will take years to see wide-scale deployment which doesn’t match the rate at which the web is evolving. This challenge that stagnates the enhancements of a protocol is sometimes referred to as *Protocol Ossification* which is a topic worthy of its own post.
 
 Eventually, the second pathway prevailed as a more practical option that involves having our desired features like multiplexing, implemented on top of a lightweight established transport protocol like UDP to avoid stagnant compatibility efforts.
 
@@ -87,11 +90,12 @@ Eventually, the second pathway prevailed as a more practical option that involve
 
 Development efforts kicked off at Google around 2012 to develop a new protocol which we know today as QUIC. Initially, the focus was on developing a multiplexed transport protocol that will help boost HTTP’s performance potential. Later in 2015, the QUIC efforts at Google were passed to the Internet Engineering Task Force (IETF) which desired to make QUIC an independent transport protocol that can benefit other application layer protocols and not just HTTP.
 
-> It is important to highlight that when talking about “QUIC” we are typically referring to the standardized version of QUIC that occupies the content of RFC 9000. Where as the initial implementation of QUIC that was developed at Google is known as gQUIC. There are differences between the two implementations however, after the migration to the IETF, Google also worked to tune their implementation to support the standardised QUIC specifications.
+> It is important to highlight that when talking about “QUIC” we are typically referring to the standardized version of QUIC that occupies the content of RFC 9000. Where as the initial implementation of QUIC that was developed at Google is known as *gQUIC*. There are differences between the two implementations however, after the migration to the IETF, Google also worked to tune their implementation to support the standardised QUIC specifications.
 
 Although QUIC is a “transport protocol”, it resides in user-space unlike traditional transport protocols such as TCP & UDP. As mentioned earlier, this is a workaround for the ossified transport layer to allow QUIC as a protocol to evolve in the future with ease.
 
 ![QUIC Protocol Stack](/img/quicstack.jpg)
+*Fig 6: QUIC’s protocol stack highlighting the user-kernel space division.*
 
 QUIC at first seems like a new protocol that is just TCP with multiplexing, but that is not entirely the case. It was also equipped with a set of features that can enhance the experience of web clients. The following is a brief overview of some of those features:
 
@@ -100,6 +104,7 @@ QUIC at first seems like a new protocol that is just TCP with multiplexing, but 
 A significant part of the web experience is related to the time it takes to establish a connection with servers because that determines how fast can we start sending application data. Especially nowadays where it is likely that even the contents within a single web page will be served from varying locations, a client can be expected to require establishing multiple connections while surfing the web. In this regard, QUIC costs at most a single round trip before being able to send application data whereas with TCP, it takes a couple of round trips (could be more if TLS 1.2 or an older version is being used).
 
 ![QUIC Handshake](/img/quichandshake.jpeg)
+*Fig 7: Comparing handshakes of TCP (with TLS 1.3) against QUIC’s handshake that requires fewer round trips [1].*
 
 2. Zero Round Trip Time (0-RTT)
 
@@ -110,16 +115,18 @@ As described above, QUIC takes a single round trip at most but in certain cases 
 Unlike with TCP, a QUIC connection is not dependent on the IP of the client device. Meaning if for instance, a client switches from Wi-Fi to a mobile network midway through a QUIC connection, that connection will be carried over and not terminated. Typically with TCP, if the IP address changes, the connection will close and have to be re-established.
 
 ![QUIC CIDs](/img/quiccid.png)
+*Fig 8: Illustration showing how Connection IDs (CID) is negotiated between the client and server to avoid having to open a new connection if the client changes network [4].*
 
-The above are just a few of the main additional features of QUIC that were put in place to improve the experience of low-latency demanding services and cases where the client’s underlying network may change. QUIC also built on years of experience with testing TCP and enhancing aspects of transport functions like loss-recovery, congestion control and others. Fundamentally, QUIC offers a lot more than what will be covered here (see RFC90001) to avoid dragging this post longer than desired.
+The above are just a few of the main additional features of QUIC that were put in place to improve the experience of low-latency demanding services and cases where the client’s underlying network may change. QUIC also built on years of experience with testing TCP and enhancing aspects of transport functions like loss-recovery, congestion control and others. Fundamentally, QUIC offers a lot more than what will be covered here (see [RFC9000](https://datatracker.ietf.org/doc/rfc9114/)) to avoid dragging this post longer than desired.
 
-Focusing on the most relevant feature of QUIC to this post, the following diagram illustrates how it is designed to be capable of multiplexing at the transport layer. When each of the HTTP streams is passed down to QUIC, independent QUIC Streams are assigned at the transport layer. This then enables the receiving end to distinguish between the incoming streams of bytes and consequently, be able to process and pass them to the application independently as soon as they arrive, thereby achieving the benefits of multiplexing. Comparing this to the previous example in H2, QUIC can assign each of the images an independent stream and so if one stream relating to image A is affected, only the processing of that stream awaits retransmission while streams of image B and C are processed therefore avoiding the head-of-line blocking problem with TCP.
+Focusing on the most relevant feature of QUIC to this post, the following diagram illustrates how it is designed to be capable of multiplexing at the transport layer. When each of the HTTP streams is passed down to QUIC, independent QUIC *Streams* are assigned at the transport layer. This then enables the receiving end to distinguish between the incoming streams of bytes and consequently, be able to process and pass them to the application independently as soon as they arrive, thereby achieving the benefits of multiplexing. Comparing this to the previous example in H2, QUIC can assign each of the images an independent stream and so if one stream relating to image A is affected, only the processing of that stream awaits retransmission while streams of image B and C are processed therefore avoiding the head-of-line blocking problem with TCP.
 
 ![QUIC Streams](/img/quicstreams.png)
+*Fig 9: QUIC streams are uniquely identified at both ends enabling the server to handle each request independently of the state of the others.*
 
 > Importantly note that in this case UDP being a well established protocol, simply acts as a vehicle for QUIC to traverse the internet infrastructure. After all, UDP operates as usual in a “best-effort” manner while all the other desired features for web exchanges (retransmission, packet reordering and other) are delegated to QUIC. Unlike with TCP, UDP does not interfere with QUIC’s streams by not interpreting them as a single stream of bytes. 
 
-With that capability to multiplex at the transport layer, H3 is now officially a standard protocol (RFC 91142) that swaps out TCP from the HTTP protocol stack for QUIC and UDP.
+With that capability to multiplex at the transport layer, H3 is now officially a standard protocol [RFC 9114](https://datatracker.ietf.org/doc/rfc9114/) that swaps out TCP from the HTTP protocol stack for QUIC and UDP.
 
 Okay, all this theory sounds great but how does QUIC perform in the real world?
 
@@ -210,8 +217,3 @@ Finally, despite QUIC’s promising performance gains and adoption so far, it’
   4. Marx, Robin. How QUIC Helps You Seamlessly Connect to Different Networks. Pulse, 4 July 2023, https://pulse.internetsociety.org/wp-content/uploads/2023/06/3-migration-multi-cid.png.s
 
   5. Yu, Alexander, and Theophilus A. Benson. "Dissecting performance of production QUIC." Proceedings of the Web Conference 2021. 2021.
-
-## Footnotes
-
-1. Iyengar, Jana and Thompson, Martin, “QUIC: A UDP-Based Multiplexed and Secure Transport”, RFC 9000 (May 2021). Available at: [https://datatracker.ietf.org/doc/rfc9000/]
-2. Bishop, Mike, “HTTP/3”, RFC 9114 (June 2022). Available at: [https://datatracker.ietf.org/doc/rfc9114/]
