@@ -1,8 +1,7 @@
-[submodule "personalblog/publicfiles"]
-	path = personalblog/publicfiles
-	url = https://github.com/ahmed-aljabri/ahmed-aljabri.github.io.git
-	branch = main
 [submodule "personalblog/public"]
 	path = personalblog/public
 	url = https://github.com/ahmed-aljabri/ahmed-aljabri.github.io.git
 	branch = main
+[submodule "personalblog/themes/hello-friend-ng"]
+	path = personalblog/themes/hello-friend-ng
+	url = https://github.com/rhazdon/hugo-theme-hello-friend-ng.git
