@@ -1,5 +1,6 @@
 ---
 title: "Dethroning TCP From The Web?"
+summary: "The emergence of QUIC and HTTP3 discussing their influence on the operation of the web domain."
 date: 2023-12-23T10:23:33+04:00
 draft: false
 toc: false
@@ -15,7 +16,7 @@ tags:
 
 #### Prerequisites
 
-This content of this post assumes knowlege of basic networking concepts such as the [OSI](https://en.wikipedia.org/wiki/OSI_model) layered model and how the [HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP) protocol works to fetch and serve web content.
+This content of this post assumes knowlege of basic networking concepts such as the [OSI](https://en.wikipedia.org/wiki/OSI_model) model and how the [HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP) protocol works to fetch and serve web content.
 ___
 
 ## Introduction
