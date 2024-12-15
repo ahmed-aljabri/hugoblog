@@ -1,6 +1,5 @@
 ---
 title: "Dethroning TCP From The Web?"
-summary: "The emergence of QUIC and HTTP3 discussing their influence on the operation of the web domain."
 date: 2023-12-23T10:23:33+04:00
 draft: false
 toc: false
