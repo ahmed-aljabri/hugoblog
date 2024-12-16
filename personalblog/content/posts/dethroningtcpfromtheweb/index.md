@@ -15,7 +15,7 @@ tags:
 
 #### Prerequisites
 
-This content of this post assumes knowlege of basic networking concepts such as the [OSI](https://en.wikipedia.org/wiki/OSI_model) model and how the [HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP) protocol works to fetch and serve web content.
+The content of this post assumes knowlege of basic networking concepts such as the [OSI](https://en.wikipedia.org/wiki/OSI_model) model and how the [HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP) protocol works to fetch and serve web content.
 ___
 
 ## Introduction
