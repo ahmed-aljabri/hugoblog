@@ -70,7 +70,7 @@ pagerSize     = 10
   [[menu.main]]
     identifier = "CV"
     name       = "CV"
-    url        = "CV/"
+    url        = "cv/"
 
   # Resume Menu - uncomment to add resume option to the navbar.
   #[[menu.main]]
