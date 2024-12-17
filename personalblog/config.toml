@@ -2,9 +2,9 @@ baseURL = 'http://ahmed-aljabri.github.io/'
 languageCode = 'en-us'
 title = 'AHMED AL JABRI'
 theme="hello-friend-ng"
-
-
 pagerSize     = 10
+
+
 [params]
   dateform        = "Jan 2, 2006"
   dateformShort   = "Jan 2"
@@ -66,6 +66,11 @@ pagerSize     = 10
     identifier = "posts"
     name       = "Blog"
     url        = "posts/"
+
+  [[menu.main]]
+    identifier = "CV"
+    name       = "CV"
+    url        = "CV/"
 
   # Resume Menu - uncomment to add resume option to the navbar.
   #[[menu.main]]
