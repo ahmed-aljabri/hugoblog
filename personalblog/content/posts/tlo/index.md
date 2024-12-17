@@ -12,6 +12,7 @@ tags:
 
 ## Introduction
 
+
 I was first introduced to the ’Transport Layer Ossification’ (TLO) phenomenon when I watched a recorded
 presentation by ex-google software engineer Jana Iyengar. In that session, the agenda was mainly around
 QUIC, a new multiplexed transport protocol that was initially designed to enhance the web’s performance and
