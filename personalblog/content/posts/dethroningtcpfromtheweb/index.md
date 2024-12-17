@@ -1,4 +1,5 @@
 ---
+description: 'The web’s performance demands is driving TCP’s capabilities to the limit and the emergence of a new player at the transport layer.'
 title: "Dethroning TCP From The Web?"
 date: 2023-12-23T10:23:33+04:00
 draft: false
