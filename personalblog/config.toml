@@ -68,7 +68,7 @@ pagerSize     = 10
     url        = "posts/"
 
   [[menu.main]]
-    identifier = "CV"
+    identifier = "cv"
     name       = "CV"
     url        = "cv/"
 
