@@ -6,6 +6,9 @@ draft: false
 ---
 ## Education
 
+- *University of Cambridge MPhil in Advanced Computer Science* - Department of Computer Science and Technology; In Progress
+[October 2025 - June 2026]
+
 - *Aston University (Birmingham, UK) BSc Cybersecurity* - School of Engineering; First Class Honours (1:1)
 [September 2019 - June 2022]
 
