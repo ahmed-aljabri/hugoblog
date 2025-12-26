@@ -11,5 +11,5 @@ The intention behind this site is to share a personal blog which will cover a ra
 > **Disclaimer: The ideas and views put forward in this site do not represent any of the organizations I work in.**
 
 You can contact me at:
-**ahmedaljabriedu@gmail.com**
+**ahmedaljabriedu **(at)** gmail.com**
 
