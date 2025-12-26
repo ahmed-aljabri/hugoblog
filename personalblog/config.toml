@@ -11,9 +11,13 @@ pagerSize     = 10
   dateformNum     = "2006-01-02"
   dateformNumTime = "2006-01-02 15:04"
 
+  # Site Logo
+  brandIconFile = "img/avatar.jpg"   # relative to /static
+
+
 
   # Subtitle for home
-  homeSubtitle = "A technical blog & portfolio site"
+  subtitle = "A technical blog & portfolio site"
 
   # Set disableReadOtherPosts to true in order to hide the links to other posts.
   disableReadOtherPosts = false
