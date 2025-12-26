@@ -1,7 +1,7 @@
 baseURL = 'http://ahmed-aljabri.github.io/'
 languageCode = 'en-us'
 title = 'AHMED AL JABRI'
-theme="hello-friend-ng"
+theme="smigle"
 pagerSize     = 10
 
 
@@ -30,9 +30,8 @@ pagerSize     = 10
   images = [""]
 
 [taxonomies]
-    category = "blog"
+    category = "categories"
     tag      = "tags"
-    series   = "series"
 
 
   # Social Icons - Links to personal accounts
@@ -56,6 +55,12 @@ pagerSize     = 10
     [languages.en.params.logo]
       logoText = "/Home"
       logoHomeLink = "/"
+
+# Goldmark
+
+[markup.goldmark.renderer]
+unsafe = true
+
 
   
 # Generic Menu
@@ -106,6 +111,4 @@ pagerSize     = 10
       "Powered by <a href=\"http://gohugo.io\">Hugo</a>",
       "Made by <a href=\"https://github.com/ahmed-aljabri\">AHMED AL-JABRI</a> &#9812;"
     ]
-
-
 
