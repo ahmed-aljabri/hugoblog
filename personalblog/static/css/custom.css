@@ -1,0 +1,24 @@
+:root {
+  color-scheme: light;
+  --bgcolor: #f8f9fa;
+  --dimcolor: #eee;
+  --fontcolor: #000;
+  --linkcolor: #00e;
+  --visitedcolor: #551a8b;
+  --precolor: #fff;
+  --prebgcolor: #000;
+}
+
+/* Override dark-mode preference and keep light variables */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light;
+    --bgcolor: #f8f9fa;
+    --dimcolor: #eee;
+    --fontcolor: #000;
+    --linkcolor: #00e;
+    --visitedcolor: #551a8b;
+    --precolor: #fff;
+    --prebgcolor: #000;
+  }
+}

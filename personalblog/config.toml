@@ -14,6 +14,8 @@ pagerSize     = 10
   # Site Logo
   brandIconFile = "img/avatar.jpg"   # relative to /static
 
+  # Custom styles appended after theme CSS
+  customStylesheets = ["css/custom.css"]
 
 
   # Subtitle for home
@@ -115,4 +117,3 @@ unsafe = true
       "Powered by <a href=\"http://gohugo.io\">Hugo</a>",
       "Made by <a href=\"https://github.com/ahmed-aljabri\">AHMED AL-JABRI</a> &#9812;"
     ]
-
