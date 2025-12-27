@@ -1,6 +1,6 @@
 ---
 title: "Curriculum Vitae"
-date: 2024-12-17T11:08:14Z
+subtitle: "Last updated: 27 Dec 2025"
 draft: false
 ---
 ---
