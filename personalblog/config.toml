@@ -19,7 +19,7 @@ pagerSize     = 10
 
 
   # Subtitle for home
-  subtitle = "A technical blog & portfolio site"
+  subtitle = "Technical blog & portfolio site"
 
   # Set disableReadOtherPosts to true in order to hide the links to other posts.
   disableReadOtherPosts = false
