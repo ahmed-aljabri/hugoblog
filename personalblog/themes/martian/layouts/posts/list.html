@@ -1,0 +1,258 @@
+{{ define "main" }}
+
+{{/* ── Build calendar data: flat list of "YYYY-MM-DD" strings ── */}}
+{{ $dates := slice }}
+{{ range .Pages }}
+  {{ $dates = $dates | append (.Date.Format "2006-01-02") }}
+{{ end }}
+{{ $datesJSON := $dates | jsonify }}
+{{ $curMonth  := now.Format "2006-01" }}
+
+<main class="max-w-4xl mx-auto px-5 py-10">
+  <div class="notes-layout">
+
+    <!-- ── Left: posts list ── -->
+    <div>
+      <div class="flex items-baseline justify-between mb-8">
+        <h1 class="text-xl font-bold" style="color:var(--color-text);">Blog</h1>
+        <span class="text-xs" style="color:var(--color-muted);">
+          {{ len .Pages }} post{{ if ne (len .Pages) 1 }}s{{ end }}
+        </span>
+      </div>
+
+      {{ range .Pages.GroupByDate "2006" }}
+        <section id="posts-year-{{ .Key }}" class="mb-10">
+          <h2 class="text-xs font-mono font-semibold uppercase tracking-widest pb-2 mb-1
+            border-b border-[var(--color-border)]" style="color:var(--color-muted);">
+            {{ .Key }}
+          </h2>
+          <div>
+            {{ range .Pages }}
+              <div id="post-{{ .Date.Format "2006-01-02" }}"
+                   data-note-ym="{{ .Date.Format "2006-01" }}"
+                   class="note-row post-row">
+                <span class="post-row-date">{{ .Date.Format "Jan 02" }}</span>
+                <div>
+                  <a href="{{ .RelPermalink }}" class="post-row-title">{{ .Title }}</a>
+                  {{ with .Description }}
+                    <p class="post-row-desc">{{ . }}</p>
+                  {{ else }}
+                    {{ with .Summary }}
+                      <p class="post-row-desc">{{ . | plainify | truncate 120 }}</p>
+                    {{ end }}
+                  {{ end }}
+                  {{ with .Params.tags }}
+                    <div class="flex flex-wrap gap-1 mt-1">
+                      {{ range . }}
+                        <a href="{{ "/tags/" | relURL }}{{ . | urlize }}" class="post-tag">{{ . }}</a>
+                      {{ end }}
+                    </div>
+                  {{ end }}
+                </div>
+              </div>
+            {{ end }}
+          </div>
+        </section>
+      {{ end }}
+    </div>
+
+    <!-- ── Right: calendar sidebar ── -->
+    <aside class="notes-cal-aside">
+      <div id="notes-calendar"
+           data-dates='{{ $datesJSON }}'
+           data-current="{{ $curMonth }}">
+        <div class="ncal-section-title">Activity</div>
+        <div id="ncal-heatmap" class="ncal-heatmap"></div>
+        <div class="ncal-nav">
+          <button id="ncal-prev" aria-label="Previous month">‹</button>
+          <span id="ncal-label" class="ncal-nav-label"></span>
+          <button id="ncal-next" aria-label="Next month">›</button>
+        </div>
+        <div id="ncal-grid" class="ncal-grid"></div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  var container = document.getElementById('notes-calendar');
+  if (!container) return;
+
+  var monthsData = {};
+  JSON.parse(container.dataset.dates || '[]').forEach(function (dateStr) {
+    var parts = dateStr.split('-');
+    var ym  = parts[0] + '-' + parts[1];
+    var day = parseInt(parts[2], 10);
+    if (!monthsData[ym]) monthsData[ym] = [];
+    monthsData[ym].push(day);
+  });
+
+  var currentMonth = container.dataset.current;
+
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var DOW = ['Mo','Tu','We','Th','Fr','Sa','Su'];
+
+  function parseYM(ym) {
+    var parts = ym.split('-');
+    return { year: parseInt(parts[0], 10), month: parseInt(parts[1], 10) };
+  }
+  function toYM(year, month) {
+    return year + '-' + (month < 10 ? '0' : '') + month;
+  }
+  function daysInMonth(year, month) {
+    return new Date(year, month, 0).getDate();
+  }
+  function level(n) {
+    if (!n) return 0;
+    if (n <= 2) return 1;
+    if (n <= 5) return 2;
+    if (n <= 10) return 3;
+    return 4;
+  }
+
+  function renderHeatmap() {
+    var hm = document.getElementById('ncal-heatmap');
+    hm.innerHTML = '';
+
+    var today = new Date();
+    var year = today.getFullYear();
+
+    // Show Jan–Dec of the current year (fixed)
+    var months = [];
+    for (var i = 1; i <= 12; i++) {
+      months.push({ year: year, month: i });
+    }
+
+    months.forEach(function (mo) {
+      var ym = toYM(mo.year, mo.month);
+      var days = monthsData[ym] || [];
+      var count = days.length;
+      var lv = level(count);
+      var isFuture = new Date(mo.year, mo.month - 1) > today;
+      var isSelected = ym === currentMonth;
+
+      var cell = document.createElement('div');
+      cell.className = 'ncal-hm-cell' + (isFuture ? '' : ' clickable');
+
+      var circle = document.createElement('div');
+      var cls = 'ncal-hm-circle lv' + lv;
+      if (isFuture) cls += ' future';
+      if (isSelected) cls += ' selected';
+      circle.className = cls;
+      circle.title = MON[mo.month - 1] + ' ' + mo.year + ': ' + count + ' post' + (count !== 1 ? 's' : '');
+
+      var cnt = document.createElement('span');
+      cnt.textContent = count > 0 ? count : (isFuture ? '·' : '–');
+      circle.appendChild(cnt);
+
+      var lbl = document.createElement('span');
+      lbl.className = 'ncal-hm-label';
+      lbl.textContent = MON[mo.month - 1];
+
+      if (!isFuture) {
+        cell.addEventListener('click', function (capturedYm) {
+          return function () {
+            currentMonth = capturedYm;
+            renderHeatmap();
+            renderCalendar();
+            scrollToMonth(capturedYm);
+          };
+        }(ym));
+      }
+
+      cell.appendChild(circle);
+      cell.appendChild(lbl);
+      hm.appendChild(cell);
+    });
+  }
+
+  function renderCalendar() {
+    var lbl = document.getElementById('ncal-label');
+    var grid = document.getElementById('ncal-grid');
+    grid.innerHTML = '';
+
+    var p = parseYM(currentMonth);
+    lbl.textContent = MON[p.month - 1] + ' ' + p.year;
+
+    DOW.forEach(function (d) {
+      var h = document.createElement('div');
+      h.className = 'ncal-day-hdr';
+      h.textContent = d;
+      grid.appendChild(h);
+    });
+
+    var firstDay = new Date(p.year, p.month - 1, 1).getDay();
+    var offset = (firstDay + 6) % 7;
+    for (var i = 0; i < offset; i++) {
+      grid.appendChild(document.createElement('div'));
+    }
+
+    var total = daysInMonth(p.year, p.month);
+    var activeDays = {};
+    (monthsData[currentMonth] || []).forEach(function (d) { activeDays[d] = true; });
+
+    for (var d = 1; d <= total; d++) {
+      var cell = document.createElement('div');
+      cell.className = 'ncal-day' + (activeDays[d] ? ' active' : '');
+      cell.textContent = d;
+
+      if (activeDays[d]) {
+        var dateStr = p.year + '-' +
+          (p.month < 10 ? '0' : '') + p.month + '-' +
+          (d < 10 ? '0' : '') + d;
+        cell.addEventListener('click', function (ds) {
+          return function () {
+            var el = document.getElementById('post-' + ds);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          };
+        }(dateStr));
+      }
+      grid.appendChild(cell);
+    }
+  }
+
+  function scrollToMonth(ym) {
+    var el = document.querySelector('[data-note-ym="' + ym + '"]');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.getElementById('ncal-prev').addEventListener('click', function () {
+    var p = parseYM(currentMonth);
+    currentMonth = p.month === 1 ? toYM(p.year - 1, 12) : toYM(p.year, p.month - 1);
+    renderHeatmap();
+    renderCalendar();
+  });
+  document.getElementById('ncal-next').addEventListener('click', function () {
+    var p = parseYM(currentMonth);
+    currentMonth = p.month === 12 ? toYM(p.year + 1, 1) : toYM(p.year, p.month + 1);
+    renderHeatmap();
+    renderCalendar();
+  });
+
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          var ym = e.target.dataset.noteYm;
+          if (ym && ym !== currentMonth) {
+            currentMonth = ym;
+            renderCalendar();
+            renderHeatmap();
+          }
+        }
+      });
+    }, { threshold: 0.6 });
+
+    document.querySelectorAll('.note-row').forEach(function (el) {
+      observer.observe(el);
+    });
+  }
+
+  renderHeatmap();
+  renderCalendar();
+})();
+</script>
+
+{{ end }}

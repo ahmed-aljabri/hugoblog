@@ -1,24 +1,29 @@
 {{ define "main" }}
 <main class="max-w-4xl mx-auto px-5 py-10">
+
   {{ with .Title }}
     <h1 class="text-xl font-bold mb-6" style="color:var(--color-text);">{{ . }}</h1>
   {{ end }}
+
   {{ range .Pages.GroupByDate "2006" }}
     <section class="mb-8">
-      <h2 class="text-xs font-mono font-semibold uppercase tracking-widest pb-2 mb-1
-        border-b border-[var(--color-border)]" style="color:var(--color-muted);">{{ .Key }}</h2>
+      <h2 class="text-xs font-mono font-semibold uppercase tracking-widest mb-3"
+        style="color:var(--color-muted);">{{ .Key }}</h2>
       <div>
         {{ range .Pages }}
           <div class="post-row">
             <span class="post-row-date">{{ .Date.Format "Jan 02" }}</span>
             <div>
               <a href="{{ .RelPermalink }}" class="post-row-title">{{ .Title }}</a>
-              {{ with .Description }}<p class="post-row-desc">{{ . }}</p>{{ end }}
+              {{ with .Description }}
+                <p class="post-row-desc">{{ . }}</p>
+              {{ end }}
             </div>
           </div>
         {{ end }}
       </div>
     </section>
   {{ end }}
+
 </main>
 {{ end }}

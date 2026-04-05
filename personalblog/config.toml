@@ -1,7 +1,7 @@
 baseURL = 'http://ahmed-aljabri.github.io/'
 languageCode = 'en-us'
-title = 'AHMED AL JABRI'
-theme="smigle"
+title = 'Ahmed Al-Jabri'
+theme="martian"
 pagerSize     = 10
 
 
@@ -31,6 +31,7 @@ pagerSize     = 10
   enableThemeToggle = true
 
   # Metadata mostly used in document's head
+  locations   = ["Cambridge, UK", "Muscat, Oman"]
   description = "portfolio site and personal blog"
   keywords = "homepage, blog, papers"
   images = [""]
@@ -46,13 +47,46 @@ pagerSize     = 10
      name = "github"
      url = "https://github.com/ahmed-aljabri"
 
-  [[params.social]] #Using a generic icon for substack since it is not yet supported.
-     name = "case"
-     url = "https://substack.com/@ahmedaljabri"
+  # ── Sidebar card ─────────────────────────────────────────────
+  [params.sidebar]
+    email = "contact@ahmedaljabri.blog"
+
+  [[params.sidebar.sections]]
+    title = "Currently"
+    [[params.sidebar.sections.items]]
+      label = "MPhil ACS — in progress"
+      url   = ""
+    [[params.sidebar.sections.items]]
+      label = "University of Cambridge"
+      url   = ""
+
+  [[params.sidebar.sections]]
+    title = "Contact"
+    [[params.sidebar.sections.items]]
+      label = "contact@ahmedaljabri.blog"
+      url   = "mailto:contact@ahmedaljabri.blog"
+
+  [[params.sidebar.sections]]
+    title = "Social"
+    [[params.sidebar.sections.items]]
+      label = "GitHub"
+      url   = "https://github.com/ahmed-aljabri"
+    [[params.sidebar.sections.items]]
+      label = "LinkedIn"
+      url   = "https://www.linkedin.com/in/aljabri-ahmed/"
+
+  [[params.sidebar.sections]]
+    title = "Writing"
+    [[params.sidebar.sections.items]]
+      label = "Blog posts"
+      url   = "/posts/"
+    [[params.sidebar.sections.items]]
+      label = "Notes"
+      url   = "/notes/"
 
 [languages]
   [languages.en]
-    title = "AHMED AL-JABRI"
+    title = "Ahmed Al-Jabri"
     subtitle = "Portfolio Site and Technical Blog"
     keywords = "blog"
     copyright = '<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
@@ -74,14 +108,34 @@ unsafe = true
 [menu]
 
   [[menu.main]]
+    identifier = "about"
+    name       = "About"
+    url        = "about/"
+    weight     = 1
+
+  [[menu.main]]
     identifier = "posts"
     name       = "Blog"
     url        = "posts/"
+    weight     = 2
+
+  [[menu.main]]
+    identifier = "notes"
+    name       = "Notes"
+    url        = "notes/"
+    weight     = 3
+
+  [[menu.main]]
+    identifier = "links"
+    name       = "Links"
+    url        = "links/"
+    weight     = 4
 
   [[menu.main]]
     identifier = "cv"
     name       = "CV"
     url        = "cv/"
+    weight     = 5
 
   # Resume Menu - uncomment to add resume option to the navbar.
   #[[menu.main]]
@@ -95,15 +149,10 @@ unsafe = true
     #name       = "Academic Writings"
     #url        = "writings/"
 	
-  [[menu.main]]
-    identifier = "about"
-    name       = "About"
-    url        = "about/"
-
   [params.portrait]
      path     = "/img/avatar.jpg"
      alt      = "Portrait"
-     maxWidth = "200px"
+     maxWidth = "155px"
 
     
   [params.footer]
@@ -115,5 +164,5 @@ unsafe = true
     topText = ["A personal blog"]
     bottomText = [
       "Powered by <a href=\"http://gohugo.io\">Hugo</a>",
-      "Made by <a href=\"https://github.com/ahmed-aljabri\">AHMED AL-JABRI</a> &#9812;"
+      "Made by <a href=\"https://github.com/ahmed-aljabri\">Ahmed Al-Jabri</a> &#9812;"
     ]

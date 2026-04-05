@@ -1,0 +1,29 @@
+{{ define "main" }}
+<main class="max-w-3xl mx-auto px-5 py-10">
+  <article>
+
+    <header class="mb-6">
+      <h1 class="text-2xl font-bold leading-snug mb-1" style="color:var(--color-text);">
+        {{ .Title }}
+      </h1>
+      {{ with .Params.subtitle }}
+        <p class="text-sm mt-1" style="color:var(--color-secondary);">{{ . }}</p>
+      {{ end }}
+    </header>
+
+    <div class="prose max-w-none cv-prose
+      prose-headings:font-semibold prose-headings:mt-5 prose-headings:mb-1
+      prose-h2:text-base prose-h2:border-b prose-h2:border-[var(--color-border)] prose-h2:pb-0.5
+      prose-h3:text-sm prose-h4:text-sm
+      prose-p:my-1 prose-p:leading-snug
+      prose-strong:font-semibold
+      prose-ul:my-1 prose-ol:my-1
+      prose-li:my-0
+      prose-hr:my-3 prose-hr:border-[var(--color-border)]
+      prose-img:rounded">
+      {{ .Content }}
+    </div>
+
+  </article>
+</main>
+{{ end }}

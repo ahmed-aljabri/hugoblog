@@ -1,0 +1,47 @@
+{{ define "main" }}
+<main class="max-w-3xl mx-auto px-5 py-10">
+  {{ $host := replaceRE "^https?://([^/]+).*$" "$1" .Params.link }}
+  <article>
+    <div class="flex items-start gap-3 mb-4">
+      <img src="https://www.google.com/s2/favicons?domain={{ $host }}&sz=32"
+        width="20" height="20" alt="" aria-hidden="true"
+        class="link-favicon mt-1" />
+      <div>
+        <a href="{{ .Params.link }}" class="link-title text-lg" target="_blank" rel="noopener">
+          {{- .Title -}}
+        </a>
+        <div class="flex items-center gap-2 mt-1">
+          <span class="link-domain">{{ $host }}</span>
+          <span style="color:var(--color-border);">·</span>
+          <time class="link-date">{{ .Date.Format "Jan 2, 2006" }}</time>
+        </div>
+      </div>
+    </div>
+
+    {{ with .Description }}
+      <p class="text-sm leading-relaxed mb-4" style="color:var(--color-secondary);">{{ . }}</p>
+    {{ end }}
+
+    {{ with .Params.tags }}
+      <div class="flex flex-wrap gap-1 mb-6">
+        {{ range . }}
+          <a href="{{ "/tags/" | relURL }}{{ . | urlize }}" class="post-tag">{{ . }}</a>
+        {{ end }}
+      </div>
+    {{ end }}
+
+    <a href="{{ .Params.link }}" target="_blank" rel="noopener"
+      class="inline-block text-sm px-4 py-2 rounded border border-[var(--color-border)]
+      no-underline transition-colors hover:border-[var(--color-link)]"
+      style="color:var(--color-text);">
+      Visit {{ $host }} ↗
+    </a>
+
+    <div class="mt-8 pt-4 border-t border-[var(--color-border)]">
+      <a href="{{ "/links/" | relURL }}" class="text-sm" style="color:var(--color-secondary);">
+        &larr; All links
+      </a>
+    </div>
+  </article>
+</main>
+{{ end }}

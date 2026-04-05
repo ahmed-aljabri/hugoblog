@@ -2,6 +2,7 @@
 title: "About me"
 date: 2026-01-07
 draft: false
+showPortrait: true
 ---
 
 I'm Ahmed, currently a graduate student at the University of Cambridge pursing an MPhil in Advanced Computer Science. My main interests are in network architecture, protocol engineering, privacy and secure programming.

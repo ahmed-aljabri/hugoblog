@@ -1,0 +1,54 @@
+{{ define "main" }}
+<main class="max-w-3xl mx-auto px-5 py-10">
+  <article>
+
+    <header class="mb-6">
+      <h1 class="text-xl font-bold leading-snug mb-2" style="color:var(--color-text);">
+        {{ .Title }}
+      </h1>
+      <!-- Date · note · reading time -->
+      <div class="post-meta flex flex-wrap items-center gap-x-2 gap-y-1">
+        <time datetime="{{ .Date }}" class="font-mono">{{ .Date.Format "2006-01-02" }}</time>
+        <span>&mdash;</span>
+        <span style="color:var(--color-muted);">note</span>
+        {{ if gt .WordCount 0 }}
+          <span>&middot;</span>
+          <span>{{ .WordCount }} words</span>
+        {{ end }}
+        {{ with .Params.tags }}
+          <span>&middot;</span>
+          <div class="flex flex-wrap gap-1">
+            {{ range . }}
+              <a href="{{ "/tags/" | relURL }}{{ . | urlize }}" class="post-tag">{{ . }}</a>
+            {{ end }}
+          </div>
+        {{ end }}
+      </div>
+    </header>
+
+    <div class="prose max-w-none
+      prose-headings:font-semibold
+      prose-h2:text-base prose-h3:text-sm
+      prose-img:rounded prose-img:border prose-img:border-[var(--color-border)]
+      prose-pre:p-0 prose-pre:bg-transparent prose-pre:border-0">
+      {{ .Content }}
+    </div>
+
+    <!-- Footer: back link + tags -->
+    <footer class="mt-10 pt-5 border-t border-[var(--color-border)]
+      flex items-center justify-between flex-wrap gap-3">
+      <a href="{{ "/notes/" | relURL }}" class="text-sm" style="color:var(--color-secondary);">
+        &larr; All notes
+      </a>
+      {{ with .Params.tags }}
+        <div class="flex flex-wrap gap-1">
+          {{ range . }}
+            <a href="{{ "/tags/" | relURL }}{{ . | urlize }}" class="post-tag">{{ . }}</a>
+          {{ end }}
+        </div>
+      {{ end }}
+    </footer>
+
+  </article>
+</main>
+{{ end }}

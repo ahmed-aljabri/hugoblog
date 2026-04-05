@@ -1,0 +1,15 @@
+{{ define "main" }}
+<main class="max-w-4xl mx-auto px-5 py-20 text-center">
+  <p class="font-mono text-5xl font-bold mb-4" style="color:var(--color-accent);">404</p>
+  <h1 class="text-xl font-semibold mb-2" style="color:var(--color-text);">Page not found</h1>
+  <p class="mb-6 text-sm" style="color:var(--color-secondary);">
+    The page you're looking for doesn't exist or has been moved.
+  </p>
+  <a href="{{ "/" | relURL }}"
+    class="inline-block px-4 py-2 rounded border border-[var(--color-border)]
+    text-sm no-underline hover:border-[var(--color-link)] transition-colors"
+    style="color:var(--color-text);">
+    &larr; Go home
+  </a>
+</main>
+{{ end }}

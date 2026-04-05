@@ -1,0 +1,19 @@
+<div class="post-meta flex flex-wrap items-center gap-x-3 gap-y-1 my-3">
+  {{ with .Date }}
+    <time datetime="{{ . }}" class="font-mono">{{ .Format "Jan 2, 2006" }}</time>
+  {{ end }}
+  {{ if and .WordCount (gt .WordCount 0) }}
+    <span>&middot;</span>
+    <span>{{ .ReadingTime }} min read</span>
+    <span>&middot;</span>
+    <span>{{ .WordCount }} words</span>
+  {{ end }}
+  {{ with .Params.tags }}
+    <span>&middot;</span>
+    <div class="flex flex-wrap gap-1">
+      {{ range . }}
+        <a href="{{ "/tags/" | relURL }}{{ . | urlize }}" class="post-tag">{{ . }}</a>
+      {{ end }}
+    </div>
+  {{ end }}
+</div>

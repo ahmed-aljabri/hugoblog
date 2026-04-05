@@ -1,0 +1,134 @@
+{{ define "main" }}
+<main class="max-w-4xl mx-auto px-5 py-10">
+
+  <!-- ── Two-column: about + sidebar ───────────────────────── -->
+  <div class="home-grid mb-14">
+
+    <!-- Left: about content -->
+    <div>
+      {{ with .Site.Params.portrait }}
+        <img
+          src="{{ .path | relURL }}"
+          alt="{{ .alt | default "Portrait" }}"
+          class="portrait"
+          style="max-width:{{ .maxWidth | default "160px" }}"
+          loading="lazy"
+        />
+      {{ end }}
+
+      {{ with .Site.GetPage "/about" }}
+        <div class="prose max-w-none
+          prose-headings:font-semibold
+          prose-h2:text-base prose-h3:text-sm
+          prose-img:rounded prose-img:border prose-img:border-[var(--color-border)]
+          prose-pre:p-0 prose-pre:bg-transparent prose-pre:border-0">
+          {{ .Content }}
+        </div>
+      {{ end }}
+    </div>
+
+    <!-- Right: sidebar card -->
+    {{ with .Site.Params.sidebar }}
+      <aside>
+        <div class="sidebar-card">
+
+          <div class="sidebar-header">More Info & Quick Links</div>
+
+          <div class="sidebar-body">
+
+            <!-- Locations -->
+            {{ with $.Site.Params.locations }}
+              <div class="flex flex-col gap-0.5">
+                {{ range . }}
+                  <div class="flex items-baseline gap-1.5">
+                    <span style="color:var(--color-muted);font-size:0.75rem;">&#x25CE;</span>
+                    <span style="color:var(--color-secondary);font-size:0.78rem;">{{ . }}</span>
+                  </div>
+                {{ end }}
+              </div>
+            {{ end }}
+
+            <!-- Config-driven sections -->
+            {{ range .sections }}
+              <div>
+                <p class="sidebar-section-title">{{ .title }}</p>
+                {{ range .items }}
+                  {{ if .url }}
+                    <a href="{{ .url }}" class="sidebar-link"
+                      {{ if not (hasPrefix .url "/") }}target="_blank" rel="noopener"{{ end }}>
+                      {{ .label }}
+                    </a>
+                  {{ else }}
+                    <span class="sidebar-link" style="cursor:default;color:var(--color-secondary);">{{ .label }}</span>
+                  {{ end }}
+                {{ end }}
+              </div>
+            {{ end }}
+
+          </div>
+        </div>
+      </aside>
+    {{ end }}
+
+  </div>
+
+  <!-- ── Recent posts ───────────────────────────────────────── -->
+  {{ $posts := where .Site.RegularPages "Type" "posts" }}
+  {{ if $posts }}
+    <section class="mb-10">
+      <div class="flex items-baseline justify-between mb-4">
+        <h2 class="text-base font-semibold" style="color:var(--color-text);">Recent posts</h2>
+        <a href="{{ "/posts/" | relURL }}" class="text-xs" style="color:var(--color-secondary);">
+          All posts &rarr;
+        </a>
+      </div>
+      <div>
+        {{ range first 5 ($posts.ByDate.Reverse) }}
+          <div class="post-row">
+            <span class="post-row-date">{{ .Date.Format "2006-01-02" }}</span>
+            <div>
+              <a href="{{ .RelPermalink }}" class="post-row-title">{{ .Title }}</a>
+              {{ with .Description }}
+                <p class="post-row-desc">{{ . }}</p>
+              {{ else }}
+                {{ with .Summary }}
+                  <p class="post-row-desc">{{ . | plainify | truncate 120 }}</p>
+                {{ end }}
+              {{ end }}
+            </div>
+          </div>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+
+  <!-- ── Recent notes ───────────────────────────────────────── -->
+  {{ $notes := where .Site.RegularPages "Type" "notes" }}
+  {{ if $notes }}
+    <section>
+      <div class="flex items-baseline justify-between mb-4">
+        <h2 class="text-base font-semibold" style="color:var(--color-text);">Recent notes</h2>
+        <a href="{{ "/notes/" | relURL }}" class="text-xs" style="color:var(--color-secondary);">
+          All notes &rarr;
+        </a>
+      </div>
+      <div>
+        {{ range first 5 ($notes.ByDate.Reverse) }}
+          <div class="py-2 border-b border-[var(--color-border)] last:border-0">
+            <div class="flex items-baseline gap-3">
+              <time class="shrink-0 font-mono text-xs" style="color:var(--color-muted);">
+                {{ .Date.Format "Jan 02" }}
+              </time>
+              <a href="{{ .RelPermalink }}" class="post-row-title">{{ .Title }}</a>
+            </div>
+            {{ with .Description }}
+              <p class="post-row-desc pl-0 mt-0.5">{{ . }}</p>
+            {{ end }}
+          </div>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+
+</main>
+{{ end }}

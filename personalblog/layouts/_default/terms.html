@@ -1,5 +1,15 @@
 {{ define "main" }}
-  <main id="terms">
-    {{ partial "terms.html" . }}
-  </main>
+<main class="max-w-4xl mx-auto px-5 py-10">
+  {{ with .Title }}
+    <h1 class="text-xl font-bold mb-6" style="color:var(--color-text);">{{ . }}</h1>
+  {{ end }}
+  <div class="flex flex-wrap gap-2">
+    {{ range .Data.Terms.Alphabetical }}
+      <a href="{{ .Page.RelPermalink }}" class="post-tag text-sm py-1 px-3">
+        {{ .Page.Title }}
+        <span class="ml-1 opacity-60">{{ .Count }}</span>
+      </a>
+    {{ end }}
+  </div>
+</main>
 {{ end }}

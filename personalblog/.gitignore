@@ -1,0 +1,9 @@
+# Hugo build artifacts
+.hugo_build.lock
+resources/_gen/
+
+# OS
+.DS_Store
+
+# Editor
+.vscode/

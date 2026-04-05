@@ -1,0 +1,10 @@
+name = "martian"
+license = "MIT"
+licenselink = ""
+description = "A minimal, text-first theme inspired by anil.recoil.org"
+homepage = ""
+tags = ["blog", "minimal", "dark-mode"]
+features = ["dark-mode", "syntax-highlighting", "responsive"]
+
+[author]
+  name = "Ahmed Al-Jabri"

@@ -1,15 +1,48 @@
 {{ define "main" }}
-  <main>
-    <article>
-      <h1 class="title">{{ .Title }}</h1>
-      {{ with .Params.subtitle }}<h3 class="subtitle">{{ . }}</h3>{{ end }}
-      {{ if or .Params.date .Params.author }}
-        <p class="post-meta">
-          {{ with .Date }}<time datetime="{{ . }}">{{ .Format "Jan 2, 2006" }}</time>{{ end }}
-          {{ with .Params.author }} • {{ . }}{{ end }}
-        </p>
+<main class="max-w-3xl mx-auto px-5 py-10">
+  <article>
+
+    {{ if .Params.showPortrait }}
+      {{ with $.Site.Params.portrait }}
+        <img src="{{ .path | relURL }}"
+          alt="{{ .alt | default "Portrait" }}"
+          style="max-width:{{ .maxWidth | default "160px" }}"
+          class="portrait"
+          loading="lazy" />
       {{ end }}
-      <div class="content">{{ .Content }}</div>
-    </article>
-  </main>
+    {{ end }}
+
+    <header class="mb-8">
+      <h1 class="text-2xl font-bold leading-snug mb-1" style="color:var(--color-text);">
+        {{ .Title }}
+      </h1>
+      {{ with .Params.subtitle }}
+        <p class="text-sm mt-1" style="color:var(--color-secondary);">{{ . }}</p>
+      {{ end }}
+      {{ if or .Date .Params.author }}
+        <div class="post-meta flex items-center gap-2 mt-3">
+          {{ with .Date }}
+            <time datetime="{{ . }}" class="font-mono">{{ .Format "Jan 2, 2006" }}</time>
+          {{ end }}
+          {{ with .Params.author }}
+            <span>&middot;</span><span>{{ . }}</span>
+          {{ end }}
+        </div>
+      {{ end }}
+    </header>
+
+    <div class="prose max-w-none
+      prose-headings:font-semibold prose-headings:mt-8 prose-headings:mb-3
+      prose-h1:text-xl prose-h2:text-lg prose-h2:border-b prose-h2:border-[var(--color-border)] prose-h2:pb-1
+      prose-h3:text-base prose-h4:text-sm
+      prose-strong:font-semibold
+      prose-li:my-0.5
+      prose-img:rounded prose-img:border prose-img:border-[var(--color-border)]
+      prose-pre:p-0 prose-pre:bg-transparent prose-pre:border-0
+      prose-hr:border-[var(--color-border)]">
+      {{ .Content }}
+    </div>
+
+  </article>
+</main>
 {{ end }}

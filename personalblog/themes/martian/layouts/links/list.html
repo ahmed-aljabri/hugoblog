@@ -1,0 +1,181 @@
+{{ define "main" }}
+
+{{/* ── Collect all external links from posts and notes ── */}}
+{{ $linkPattern := "\\[[^\\]]*\\]\\(https?://[^)]+\\)" }}
+{{ $sections := slice "posts" "notes" }}
+
+<main class="max-w-4xl mx-auto px-5 py-10">
+  <div class="notes-layout">
+
+    <!-- ── Left: extracted links ── -->
+    <div>
+      <div class="flex items-baseline justify-between mb-2">
+        <h1 class="text-xl font-bold" style="color:var(--color-text);">{{ .Title }}</h1>
+      </div>
+      {{ with .Description }}
+        <p class="text-sm mb-8" style="color:var(--color-secondary);">{{ . }}</p>
+      {{ end }}
+
+      {{ $hasAny := false }}
+      {{ range $sections }}
+        {{ $section := . }}
+        {{ $pages := where $.Site.RegularPages "Section" $section }}
+        {{ range $pages }}
+          {{ $page    := . }}
+          {{ $matches := findRE $linkPattern $page.RawContent }}
+          {{ if $matches }}
+            {{ $hasAny = true }}
+            <section class="mb-10">
+              <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mb-3 pb-2
+                border-b border-[var(--color-border)]">
+                <a href="{{ $page.RelPermalink }}"
+                   class="font-semibold text-sm no-underline hover:underline"
+                   style="color:var(--color-text);">
+                  {{ $page.Title }}
+                </a>
+                <span class="text-xs font-mono" style="color:var(--color-muted);">
+                  {{ $page.Date.Format "Jan 2, 2006" }}
+                </span>
+                <span class="text-xs px-1.5 py-0.5 rounded"
+                  style="background:var(--color-surface-alt);color:var(--color-muted);">
+                  {{ $section }}
+                </span>
+              </div>
+              <div>
+                {{ range $matches }}
+                  {{ $match := . }}
+                  {{ $url  := replaceRE "^\\[[^\\]]*\\]\\((https?://[^)]+)\\)$" "$1" $match }}
+                  {{ $text := replaceRE "^\\[([^\\]]*)\\]\\(https?://[^)]+\\)$" "$1" $match }}
+                  {{ $host := replaceRE "^https?://([^/]+).*$" "$1" $url }}
+                  <div class="link-row">
+                    <div class="link-left">
+                      <img src="https://www.google.com/s2/favicons?domain={{ $host }}&sz=32"
+                        width="16" height="16" alt="" aria-hidden="true"
+                        class="link-favicon" loading="lazy" />
+                      <div class="link-body">
+                        <a href="{{ $url }}" class="link-title" target="_blank" rel="noopener">
+                          {{- $text -}}
+                        </a>
+                      </div>
+                    </div>
+                    <div class="link-right">
+                      <span class="link-domain">{{ $host }}</span>
+                    </div>
+                  </div>
+                {{ end }}
+              </div>
+            </section>
+          {{ end }}
+        {{ end }}
+      {{ end }}
+
+      {{ if not $hasAny }}
+        <p class="text-sm" style="color:var(--color-secondary);">
+          No external links found yet. Add some to your posts or notes.
+        </p>
+      {{ end }}
+    </div>
+
+    <!-- ── Right: feeds ── -->
+    <aside style="display:flex;flex-direction:column;gap:1rem;">
+
+      <div class="sidebar-card">
+        <div class="sidebar-header">Latest RFCs</div>
+        <div class="sidebar-body" id="rfc-feed">
+          <div style="color:var(--color-muted);font-size:0.75rem;">Loading…</div>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-header">SIGCOMM</div>
+        <div class="sidebar-body" id="sigcomm-feed">
+          <div style="color:var(--color-muted);font-size:0.75rem;">Loading…</div>
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  // ── RFC feed ──
+  var rfcFeed = document.getElementById('rfc-feed');
+  if (rfcFeed) {
+    fetch('https://datatracker.ietf.org/api/v1/doc/document/?type=rfc&order_by=-id&limit=5&format=json')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var rfcs = data.objects || [];
+        if (!rfcs.length) { rfcFeed.innerHTML = '<span style="color:var(--color-muted);font-size:0.75rem;">No data.</span>'; return; }
+        rfcFeed.innerHTML = '';
+        rfcs.forEach(function (rfc) {
+          var num  = (rfc.rfc || rfc.name || '').replace(/\D/g, '');
+          var url  = 'https://www.rfc-editor.org/rfc/rfc' + num;
+          var date = (rfc.time || '').slice(0, 7);
+          var el = document.createElement('div');
+          el.className = 'rfc-item';
+          el.style.cssText = 'padding:0.35rem 0;border-bottom:1px solid var(--color-border);';
+          el.innerHTML =
+            '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:0.5rem;margin-bottom:0.2rem;">' +
+              '<a href="' + url + '" target="_blank" rel="noopener" style="font-family:ui-monospace,SF Mono,Consolas,monospace;font-size:0.72rem;font-weight:700;color:var(--color-link);text-decoration:none;">RFC ' + num + '</a>' +
+              '<span style="font-size:0.65rem;color:var(--color-muted);font-family:ui-monospace,SF Mono,Consolas,monospace;white-space:nowrap;">' + date + '</span>' +
+            '</div>' +
+            '<div style="font-size:0.72rem;color:var(--color-secondary);line-height:1.35;">' + rfc.title + '</div>';
+          rfcFeed.appendChild(el);
+        });
+        var items = rfcFeed.querySelectorAll('.rfc-item');
+        if (items.length) items[items.length - 1].style.borderBottom = 'none';
+      })
+      .catch(function () {
+        rfcFeed.innerHTML = '<span style="color:var(--color-muted);font-size:0.75rem;">Could not load RFCs.</span>';
+      });
+  }
+
+  // ── SIGCOMM feed ──
+  var sigFeed = document.getElementById('sigcomm-feed');
+  if (sigFeed) {
+    var year = new Date().getFullYear();
+
+    function fetchYear(y) {
+      return fetch('https://dblp.org/search/publ/api?q=toc%3Adb%2Fconf%2Fsigcomm%2Fsigcomm' + y + '.bht%3A&h=5&format=json')
+        .then(function (r) { return r.json(); });
+    }
+
+    function renderPapers(data, y) {
+      var hits = (data.result && data.result.hits && data.result.hits.hit) || [];
+      if (!hits.length) {
+        if (y > 2010) {
+          fetchYear(y - 1).then(function (d) { renderPapers(d, y - 1); })
+            .catch(function () { sigFeed.innerHTML = '<span style="color:var(--color-muted);font-size:0.75rem;">Could not load papers.</span>'; });
+        } else {
+          sigFeed.innerHTML = '<span style="color:var(--color-muted);font-size:0.75rem;">No data found.</span>';
+        }
+        return;
+      }
+      sigFeed.innerHTML = '';
+      var label = document.createElement('div');
+      label.style.cssText = 'font-size:0.65rem;color:var(--color-muted);font-family:ui-monospace,SF Mono,Consolas,monospace;margin-bottom:0.4rem;';
+      label.textContent = 'SIGCOMM ' + y;
+      sigFeed.appendChild(label);
+      hits.forEach(function (h) {
+        var info  = h.info || {};
+        var url   = info.ee || info.url || '#';
+        var title = (info.title || 'Untitled').replace(/\.$/, '');
+        var el = document.createElement('div');
+        el.className = 'sigcomm-item';
+        el.style.cssText = 'padding:0.35rem 0;border-bottom:1px solid var(--color-border);';
+        el.innerHTML = '<a href="' + url + '" target="_blank" rel="noopener" style="font-size:0.72rem;color:var(--color-link);text-decoration:none;line-height:1.35;display:block;">' + title + '</a>';
+        sigFeed.appendChild(el);
+      });
+      var items = sigFeed.querySelectorAll('.sigcomm-item');
+      if (items.length) items[items.length - 1].style.borderBottom = 'none';
+    }
+
+    fetchYear(year).then(function (d) { renderPapers(d, year); })
+      .catch(function () { sigFeed.innerHTML = '<span style="color:var(--color-muted);font-size:0.75rem;">Could not load papers.</span>'; });
+  }
+})();
+</script>
+
+{{ end }}

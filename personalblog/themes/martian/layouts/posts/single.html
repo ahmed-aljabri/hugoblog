@@ -1,0 +1,49 @@
+{{ define "main" }}
+<main class="max-w-4xl mx-auto px-5 py-10">
+  <article>
+
+    <!-- Header -->
+    <header class="mb-8">
+      <h1 class="text-2xl font-bold leading-snug mb-2" style="color:var(--color-text);">
+        {{ .Title }}
+      </h1>
+      {{ with .Description }}
+        <p class="text-base leading-snug mb-3" style="color:var(--color-secondary);">{{ . }}</p>
+      {{ end }}
+      {{ partial "post-meta.html" . }}
+    </header>
+
+    <!-- Featured image -->
+    {{ with .Resources.GetMatch .Params.featured_image }}
+      <figure class="mb-8">
+        <img src="{{ .RelPermalink }}" alt="{{ $.Title }}"
+          class="w-full rounded border border-[var(--color-border)]" loading="lazy" />
+      </figure>
+    {{ end }}
+
+    <!-- Content -->
+    <div class="prose max-w-none
+      prose-headings:font-semibold
+      prose-h1:text-xl prose-h2:text-lg prose-h3:text-base prose-h4:text-sm
+      prose-img:rounded prose-img:mx-auto
+      prose-img:border prose-img:border-[var(--color-border)]
+      prose-pre:p-0 prose-pre:bg-transparent prose-pre:border-0
+      prose-table:text-sm">
+      {{ .Content }}
+    </div>
+
+    <!-- Tags footer -->
+    {{ with .Params.tags }}
+      <footer class="mt-10 pt-5 border-t border-[var(--color-border)]">
+        <div class="flex flex-wrap gap-1.5 items-center">
+          <span class="text-xs" style="color:var(--color-muted);">Tagged:</span>
+          {{ range . }}
+            <a href="{{ "/tags/" | relURL }}{{ . | urlize }}" class="post-tag">{{ . }}</a>
+          {{ end }}
+        </div>
+      </footer>
+    {{ end }}
+
+  </article>
+</main>
+{{ end }}
