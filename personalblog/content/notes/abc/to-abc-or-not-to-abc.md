@@ -21,9 +21,9 @@ The draft also mentions that ABC may solve the slow congestion window opening pr
 
 ![ABC](/img/hs_cwnd_evolution.png)
 
-In standard TCP slow-start phase (right), as expected, using stretched acks slows down the congestion window opening notably compared to the standard method or even existing delayed-ack approach. Likewise, with ABC enabled (left), stretched acks do not suffer as much! 
+In standard TCP slow-start phase (right), as expected, using stretched acks slows down the congestion window opening notably compared to the standard method or even existing delayed-ack approach. With ABC enabled (left), stretched acks do not suffer as much! 
 
-Motivated by the initial results and the discussion I had with two of TARR's authors (Prof. Jon Crowcroft and Carles Gomez), I was interested to see if any notable TCP stacks actually use ABC. Here is what I found so far:
+Motivated by the initial results and the discussion I had with two of TARR's authors ([Prof. Jon Crowcroft](https://www.cst.cam.ac.uk/people/jac22) and [Carles Gomez](https://sites.google.com/site/carlesgomez/)), I was interested to see if any notable TCP stacks actually use ABC. Here is what I found so far:
 
 
 
@@ -122,7 +122,7 @@ if (pcb->state >= ESTABLISHED) {
 
 Despite ABC being an experimental feature, there are some notable stacks that implement variations of ABC out there! Which means that for new extensions to TCP like TARR, it would be useful to evaluate how TARR behaves with ABC enabled. My initial experiments so far show promising results but need to be evaluated more extensively before making a proper case. For instance, using stretched acks during slow-start may lead to reversed results if RTTs drift to a point that the acks are not received in time to maintain the feedback loop, with that potentially causing an RTO event at which the cwnd will be drastically reduced. 
 
-Despite that, given how ABC seems to address the slow congestion window opening during slow-start, I could imagine cases where using stretched ACKs from the start, with ABC enabled, may not be a bad idea when compared against changing the ack ratio multiple times in a connection's lifetime (e.g. risk of middlebox interference) - however I am yet to observe and verify the cost of repetitive TARR requests to change the ack ratio during a connection.
+Despite that, given how ABC seems to address the slow congestion window opening, I could imagine cases where using stretched ACKs during slow-start, with ABC enabled, may not be a bad idea when compared against changing the ack ratio multiple times in a connection's lifetime (e.g. risk of middlebox interference) - however, I am yet to observe and verify the cost of repetitive TARR requests to change the ack ratio during a connection.
 
 Another thing worth noting is that although standardisation can often drive adoption, some ideas propagate far ahead of standardisation efforts - the variety of ABC-like implementations is an example of that. From an implementers' perspective, it makes it more challenging to evaluate new extensions (what ABC variant do we test with?) - possibly highlighting where standardisation catching up would help.
 
