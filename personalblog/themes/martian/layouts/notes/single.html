@@ -3,9 +3,12 @@
   <article>
 
     <header class="mb-6">
-      <h1 class="text-xl font-bold leading-snug mb-2" style="color:var(--color-text);">
-        {{ .Title }}
-      </h1>
+      <div class="flex items-stretch gap-3 mb-2">
+        <span style="width:3px;background:var(--color-accent);border-radius:2px;flex-shrink:0;"></span>
+        <h1 class="text-xl font-bold leading-snug" style="color:var(--color-text);">
+          {{ .Title }}
+        </h1>
+      </div>
       <!-- Date · note · reading time -->
       <div class="post-meta flex flex-wrap items-center gap-x-2 gap-y-1">
         <time datetime="{{ .Date }}" class="font-mono">{{ .Date.Format "2006-01-02" }}</time>

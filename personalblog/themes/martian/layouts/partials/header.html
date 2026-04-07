@@ -104,23 +104,40 @@
       var isDark = html.classList.toggle('dark');
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
       document.getElementById('meta-theme-color').content = isDark ? '#0d1117' : '#fffffc';
-      // Swap highlight.js theme
-      document.getElementById('hljs-light').disabled = isDark;
-      document.getElementById('hljs-dark').disabled  = !isDark;
       updateIcon();
     });
 
-    // Sync hljs theme on load
-    if (html.classList.contains('dark')) {
-      document.getElementById('hljs-light').disabled = true;
-      document.getElementById('hljs-dark').disabled  = false;
-    }
   })();
 
-  // Init highlight.js
+  // Init highlight.js + floating copy button
   document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('pre code').forEach(function(block) {
       hljs.highlightElement(block);
+
+      var pre = block.parentElement;
+
+      // Wrap pre in .code-block
+      var wrapper = document.createElement('div');
+      wrapper.className = 'code-block';
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(pre);
+
+      // Floating copy button
+      var copyBtn = document.createElement('button');
+      copyBtn.className = 'code-copy';
+      copyBtn.textContent = 'copy';
+      copyBtn.addEventListener('click', function() {
+        navigator.clipboard.writeText(block.textContent).then(function() {
+          copyBtn.textContent = 'copied!';
+          copyBtn.classList.add('copied');
+          setTimeout(function() {
+            copyBtn.textContent = 'copy';
+            copyBtn.classList.remove('copied');
+          }, 2000);
+        });
+      });
+
+      wrapper.appendChild(copyBtn);
     });
   });
 </script>

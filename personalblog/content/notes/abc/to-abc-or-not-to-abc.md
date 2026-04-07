@@ -1,7 +1,7 @@
 ---
 title: "To ABC or not to ABC?"
 date: 2026-04-05
-description: "RFC 3465 never made the TCP standard, yet Linux, FreeBSD, and lwIP each quietly opted for their own variation of it."
+description: "RFC 3465 / ABC is yet to make the TCP standard, yet it is deployed (with variation) in notable TCP stacks - what does that mean for new TCP extensions like TARR?"
 tags: ["TCP", "congestion-control", "protocols", "networking"]
 draft: false
 ---
